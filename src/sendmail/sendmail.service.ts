@@ -1,12 +1,6 @@
 import { SendGridService } from '@anchan828/nest-sendgrid';
-import {
-  BadRequestException,
-  HttpCode,
-  HttpException,
-  Injectable,
-} from '@nestjs/common';
-import { Subject } from 'rxjs';
-
+import { HttpException, Injectable } from '@nestjs/common';
+import sendmailTemplate from './sendmailtemplate';
 @Injectable()
 export class SendmailService {
   constructor(private readonly sendgridService: SendGridService) {}
@@ -22,10 +16,11 @@ export class SendmailService {
         from: process.env.FROM_EMAIL,
         subject: 'Sendgrid workshop',
         text: 'this text place',
-        html: `
-          <h1> Hi ${targetmail} </h1>
-          <p>Now ${tokenName} = ${tokenPrice}$</p>
-        `,
+        html: sendmailTemplate(targetmail, tokenName, tokenPrice),
+        // `
+        //   <h1> Hi ${targetmail} </h1>
+        //   <p>Now ${tokenName} = ${tokenPrice}$</p>
+        // `,
       });
       return `sendmail success`;
     } catch (error) {
